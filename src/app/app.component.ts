@@ -1,5 +1,4 @@
 import { AfterContentInit, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import {
   Element as StripeElement,
@@ -8,8 +7,6 @@ import {
   StripeService
 } from '@nomadreservations/ngx-stripe';
 import { PaymentRequestButtonStyle, RequestElementOptions } from 'projects/ngx-stripe/src/lib/interfaces/element';
-import { environment } from 'src/environments/environment';
-import { DialogComponent } from './dialog/dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +15,9 @@ import { DialogComponent } from './dialog/dialog.component';
 })
 export class AppComponent implements AfterContentInit {
   error: any;
-  stripeKey = new FormControl('', [Validators.required, validateStripeTestKey]);
+  stripeKey;
   keyError = 'Must be a valid publishable test key (e.g. beings with pk_test_)';
   complete = false;
-  complete2 = false;
   element: StripeElement;
   cardOptions: ElementOptions = {
     style: {
@@ -62,95 +58,19 @@ export class AppComponent implements AfterContentInit {
     locale: 'en'
   };
 
-  public pay = 100;
-
   token: any = {};
 
   constructor(private _stripe: StripeService, private _dialog: MatDialog) {
-    this.stripeKey.setValue('pk_test_51HhubLIkRCVjhNhAZwcZUywqDXi4hV1ZTlnajARoh2Y3cQZjZMyWjeIjy3tJzZC3400sNsIKe0YjfZgdYCHtytMM00uUNpGXpJ');
+    this._stripe.changeKey('pk_test_51HhubLIkRCVjhNhAZwcZUywqDXi4hV1ZTlnajARoh2Y3cQZjZMyWjeIjy3tJzZC3400sNsIKe0YjfZgdYCHtytMM00uUNpGXpJ')
   }
 
   ngAfterContentInit() {
-    this.keyUpdated();
   }
 
   cardUpdated(result) {
-    console.log(result);
     this.element = result.element;
     this.complete = result.complete;
     this.error = undefined;
-  }
-
-  cardUpdated2(result) {
-    console.log('update second card', result);
-    this.element = result.element;
-    this.complete2 = result.complete;
-    this.error = undefined;
-  }
-
-  keyUpdated() {
-    if (this.stripeKey.valid && this.stripeKey.value.length > 0) {
-      this._stripe.changeKey(this.stripeKey.value);
-    } else if (environment.stripeKey) {
-      this._stripe.changeKey(environment.stripeKey);
-    }
-  }
-
-  updatePay(amount: number) {
-    this.pay = amount;
-    this.requestOptions = {
-      ...this.requestOptions,
-      total: {
-        ...this.requestOptions.total,
-        amount: amount * 100
-      }
-    };
-  }
-
-  openPaymentDialog(): void {
-    const dialogRef = this._dialog.open(DialogComponent, {
-      width: '370px',
-      data: { key: this.stripeKey }
-    });
-    dialogRef.afterClosed().subscribe(token => {
-      this.token = token;
-    });
-  }
-
-  requestUpdated(result) {
-    console.log('updated token ', result);
-    this.token = result;
-    // if the server completes payment call this
-    result.complete('success');
-    // if the server fails to complete payment call this instead
-    // result.complete('fail');
-  }
-
-  updateShippingAddress(result) {
-    console.log('shipping address change', result);
-    result.updateWith({
-      status: 'success',
-      shippingOptions: [
-        {
-          id: 'free-shipping',
-          label: 'Free shipping',
-          detail: 'Arrives in 5 to 7 days',
-          amount: 0
-        },
-        {
-          id: 'express',
-          label: 'Express shipping',
-          detail: 'Arrives in 1 to 2 days',
-          amount: 1000
-        }
-      ]
-    });
-  }
-  updateShippingOption(result) {
-    console.log('shipping option change', result);
-    result.updateWith({
-      status: 'success'
-    });
   }
 
   getCardToken() {
@@ -167,13 +87,7 @@ export class AppComponent implements AfterContentInit {
       })
       .subscribe(result => {
         this.token = result;
+        console.log(result)
       });
   }
-}
-
-function validateStripeTestKey(control: FormControl) {
-  if (control.value && control.value.match(/^pk_test_.+/)) {
-    return;
-  }
-  return { valid: false };
 }
