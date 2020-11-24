@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxStripeModule } from '@nomadreservations/ngx-stripe';
 import { AppComponent } from './app.component';
 import { DialogComponent } from './dialog/dialog.component';
+import { MatFileUploadModule } from 'angular-material-fileupload';
 
 @NgModule({
   declarations: [AppComponent, DialogComponent],
@@ -30,7 +31,8 @@ import { DialogComponent } from './dialog/dialog.component';
     MatCardModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxStripeModule.forRoot('')
+    NgxStripeModule.forRoot(''),
+    MatFileUploadModule
   ],
   providers: [],
   bootstrap: [AppComponent]
