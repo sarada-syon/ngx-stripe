@@ -81,3 +81,10 @@ app-root {
 .mat-form-field {
 	width: 100%;
 }
+
+.upload-drop-zone{
+	width: 100%;
+  min-height:100px;
+  border-style: dotted;
+  margin: 20px 1px 40px 10px;
+}

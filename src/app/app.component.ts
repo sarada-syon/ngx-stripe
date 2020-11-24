@@ -90,4 +90,10 @@ export class AppComponent implements AfterContentInit {
         console.log(result)
       });
   }
+
+  upload(file,event){
+    console.log('Upload func calling');
+    console.log(file);
+    console.log(event);
+  }
 }

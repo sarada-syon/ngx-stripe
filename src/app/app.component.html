@@ -20,9 +20,9 @@
 <div style="width: 500px">
     <mat-file-upload-queue #fileUploadQueue id="fileUploadQueue"
         [fileAlias]="'file'"
-        [httpUrl]="'http://localhost:8180/jax-rs-jersey-application-sample'" multiple>
+        [httpUrl]="''" multiple>
  
-        <mat-file-upload [file]="file" [id]="i" *ngFor="let file of fileUploadQueue.files; let i = index"></mat-file-upload>
+        <mat-file-upload (click)="upload(file,$event)" [file]="file" [id]="i" *ngFor="let file of fileUploadQueue.files; let i = index"></mat-file-upload>
     </mat-file-upload-queue>
 </div>
 
